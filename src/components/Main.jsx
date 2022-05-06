@@ -13,28 +13,56 @@ export function Main(props) {
     props.onCardClick(card);
   };
 
-  function handleCardLike(card) {
+  const handleCardLike = (card) => {
     const isLiked = card.likes.some((user) => user._id === currentUser._id);
 
     api.changeLikeCardStatus(card._id, !isLiked).then((newCard) => {
+      console.log("nCard:", newCard.likes);
+      const cardElm = (
+        <Card
+          key={newCard._id}
+          cardData={newCard}
+          onCardClick={handleCardClick}
+          onCardLike={handleCardLike}
+        ></Card>
+      );
       setCards((state) =>
         state.map((currentCard) =>
-          currentCard._id === card._id ? newCard : currentCard
+          currentCard._id === card._id ?  cardElm  : currentCard
         )
       );
     });
-  }
+  };
+
+  /* 
+  function handleCardLike(card) {
+    const isLiked = card.likes.some((user) => user._id === currentUser._id);
+
+    api.changeLikeCardStatus(card._id, !isLiked).then((nCard) => {
+      console.log("nCard:", nCard._id);
+      const cardElm = (
+        <Card
+          key={nCard._id}
+          cardData={nCard}
+          onCardClick={handleCardClick}
+          onCardLike={handleCardLike}
+        ></Card>
+      );
+
+      setCards((state) =>
+        state.map((currentCard) =>
+          currentCard._id === nCard._id && cards.length > 0
+            ? cardElm
+            : currentCard
+        )
+      );
+    });
+  } */
 
   React.useEffect(() => {
-    console.log("card geting");
     api
       .getInitialCards()
       .then((res) => {
-        let dza = true;
-        if (dza === true) {
-          dza = false;
-          return;
-        }
         const cardElement = res.map((card) => (
           <Card
             key={card._id}
